@@ -180,18 +180,26 @@ void DirectionPlugin::Render(CanvasWrapper canvas)
 				hitbox3D[i] = Rotate(hitbox[i], dRoll, -dYaw, dPitch) + v;
 				//hitbox2D[i] = canvas.Project(Rotate(hitbox[i], dRoll, -dYaw, dPitch) + v);
 			}
-			RT::Line(hitbox3D[0], hitbox3D[1], 1.f).DrawWithinFrustum(canvas, frust);
-			RT::Line(hitbox3D[1], hitbox3D[2], 1.f).DrawWithinFrustum(canvas, frust);
-			RT::Line(hitbox3D[2], hitbox3D[3], 1.f).DrawWithinFrustum(canvas, frust);
-			RT::Line(hitbox3D[3], hitbox3D[0], 1.f).DrawWithinFrustum(canvas, frust);
-			RT::Line(hitbox3D[4], hitbox3D[5], 1.f).DrawWithinFrustum(canvas, frust);
-			RT::Line(hitbox3D[5], hitbox3D[6], 1.f).DrawWithinFrustum(canvas, frust);
-			RT::Line(hitbox3D[6], hitbox3D[7], 1.f).DrawWithinFrustum(canvas, frust);
-			RT::Line(hitbox3D[7], hitbox3D[4], 1.f).DrawWithinFrustum(canvas, frust);
-			RT::Line(hitbox3D[0], hitbox3D[4], 1.f).DrawWithinFrustum(canvas, frust);
-			RT::Line(hitbox3D[1], hitbox3D[5], 1.f).DrawWithinFrustum(canvas, frust);
-			RT::Line(hitbox3D[2], hitbox3D[6], 1.f).DrawWithinFrustum(canvas, frust);
-			RT::Line(hitbox3D[3], hitbox3D[7], 1.f).DrawWithinFrustum(canvas, frust);
+				
+			//canvas.SetColor(255, 0, 0, 255);
+			//RT::Line(hitbox3D[0], hitbox3D[1], 1.f).DrawWithinFrustum(canvas, frust);
+			//RT::Line(hitbox3D[1], hitbox3D[2], 1.f).DrawWithinFrustum(canvas, frust);
+			//RT::Line(hitbox3D[2], hitbox3D[3], 1.f).DrawWithinFrustum(canvas, frust);
+			//RT::Line(hitbox3D[3], hitbox3D[0], 1.f).DrawWithinFrustum(canvas, frust);
+
+			//canvas.SetColor(0, 255, 0, 255);
+			//RT::Line(hitbox3D[4], hitbox3D[5], 1.f).DrawWithinFrustum(canvas, frust);
+			//RT::Line(hitbox3D[5], hitbox3D[6], 1.f).DrawWithinFrustum(canvas, frust);
+			//RT::Line(hitbox3D[6], hitbox3D[7], 1.f).DrawWithinFrustum(canvas, frust);
+			//RT::Line(hitbox3D[7], hitbox3D[4], 1.f).DrawWithinFrustum(canvas, frust);
+
+			//canvas.SetColor(0, 0, 255, 255);
+			//RT::Line(hitbox3D[0], hitbox3D[4], 1.f).DrawWithinFrustum(canvas, frust);
+			//RT::Line(hitbox3D[1], hitbox3D[5], 1.f).DrawWithinFrustum(canvas, frust);
+			//RT::Line(hitbox3D[2], hitbox3D[6], 1.f).DrawWithinFrustum(canvas, frust);
+			//RT::Line(hitbox3D[3], hitbox3D[7], 1.f).DrawWithinFrustum(canvas, frust);
+			
+
 
 			float diff = (camera.GetLocation() - v).magnitude();
 			Quat car_rot = RotatorToQuat(r);
@@ -200,8 +208,10 @@ void DirectionPlugin::Render(CanvasWrapper canvas)
 
 
 			auto sim = car.GetVehicleSim();
+			/*
 			auto wheels = sim.GetWheels();
-			if (wheels.IsNull()) continue;
+			if (wheels.IsNull()) 
+				continue;
 			Vector turn_axis = RotateVectorWithQuat(Vector{ 0.f, 0.f, 1.f }, car_rot);
 			Quat upright_rot = RT::AngleAxisRotation(3.14159f / 2.0f, Vector{ 1.f, 0.f, 0.f });
 			for (auto wheel : wheels)
@@ -217,6 +227,29 @@ void DirectionPlugin::Render(CanvasWrapper canvas)
 				
 				circ.Draw(canvas, frust);
 			}
+			*/
+
+			auto circleSize =
+				hitboxes.at(car_i).getLength() / 2.0f +
+				hitboxes.at(car_i).getHeight() / 2.0f +
+				hitboxes.at(car_i).getWidth() / 2.0f;
+
+			circleSize = circleSize / 3.0f;
+
+			canvas.SetColor(255, 0, 0, 255);
+			auto rot = car_rot;
+			RT::Circle circ { v, rot, circleSize };
+			circ.Draw(canvas, frust);
+
+			canvas.SetColor(0, 255, 0, 255);
+			auto rot2 = car_rot * RT::AngleAxisRotation(3.14159f / 2.0f, Vector{ 0.f, 1.f, 0.f });
+			RT::Circle circ2 { v, rot2, circleSize };
+			circ2.Draw(canvas, frust);
+
+			canvas.SetColor(0, 0, 255, 255);
+			auto rot3 = car_rot * RT::AngleAxisRotation(3.14159f / 2.0f, Vector{ 1.f, 0.f, 0.f });
+			RT::Circle circ3 { v, rot3, circleSize };
+			circ3.Draw(canvas, frust);
 
 			car_i++;
 		}
