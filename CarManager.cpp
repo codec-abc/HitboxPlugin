@@ -5,91 +5,90 @@ CarManager::CarManager()
 {
 }
 
-Hitbox CarManager::getHitbox(CARBODY car_type, CarWrapper& car)
+Hitbox CarManager::getHitbox(CarWrapper& car)
 {
 	// octane default
 	Hitbox hitbox(118.0074000f / 2.0f, 84.1994100f / 2.0f, 36.1590700f / 2.0f, 13.87566f, 0.0f, 20.75499f);;
-	switch (car_type) {
-	// OCTANE type ---------------------------------------------------------------
-	case CAR_OCTANE:
-	case CAR_OCTANEZSR:
-	case CAR_BACKFIRE:
-	case CAR_ZIPPY:
-	case CAR_ROADHOG:
-	case CAR_ROADHOGXL:
-	case CAR_TAKUMI:
-	case CAR_VULCAN:
-	case CAR_TAKUMIRXT:
-	case CAR_BONESHAKER:
-	case CAR_TRITON:
-	case CAR_SCARAB:
-	case CAR_GIZMO:
-	case CAR_DELOREAN:
-	case CAR_PROTEUS:
-	case CAR_GROG:
-	case CAR_ARMADILLO: //gears of war car, XBOX exclusive?
-	case CAR_MARAUDER:
-		hitbox = Hitbox(118.0074000f / 2.0f, 84.1994100f / 2.0f, 36.1590700f / 2.0f, 13.87566f, 0.0f, 20.75499f);
-		break;
+	//switch (car_type) {
+	//// OCTANE type ---------------------------------------------------------------
+	//case CAR_OCTANE:
+	//case CAR_OCTANEZSR:	
+	//case CAR_BACKFIRE:
+	//case CAR_ZIPPY:
+	//case CAR_ROADHOG:
+	//case CAR_ROADHOGXL:
+	//case CAR_TAKUMI:
+	//case CAR_VULCAN:
+	//case CAR_TAKUMIRXT:
+	//case CAR_BONESHAKER:
+	//case CAR_TRITON:
+	//case CAR_SCARAB:
+	//case CAR_GIZMO:
+	//case CAR_DELOREAN:
+	//case CAR_PROTEUS:
+	//case CAR_GROG:
+	//case CAR_ARMADILLO: //gears of war car, XBOX exclusive?
+	//case CAR_MARAUDER:
+	//	hitbox = Hitbox(118.0074000f / 2.0f, 84.1994100f / 2.0f, 36.1590700f / 2.0f, 13.87566f, 0.0f, 20.75499f);
+	//	break;
 
-	// BREAKOUT type ---------------------------------------------------------------
-	case CAR_BREAKOUT:
-	case CAR_BREAKOUTTYPES:
-	case CAR_ANIMUSGP:
-		hitbox = Hitbox(65.746178f, 40.260502f, 15.15f, 12.5f, 0.0f, 11.75f);
-		break;
+	//// BREAKOUT type ---------------------------------------------------------------
+	//case CAR_BREAKOUT:
+	//case CAR_BREAKOUTTYPES:
+	//case CAR_ANIMUSGP:
+	//	hitbox = Hitbox(65.746178f, 40.260502f, 15.15f, 12.5f, 0.0f, 11.75f);
+	//	break;
 
-	// BATMOBILE ---------------------------------------------------------------
-	case CAR_BATMOBILE:
-		hitbox = Hitbox(64.409989f, 42.335182f, 14.697201f, 9.008572f, 0.0f, 12.0942f);
-		break;
-	// PLANK type    ---------------------------------------------------------------
-	case CAR_MANTIS:
-	case CAR_TWINMILL:
-	case CAR_PALADIN:
-	case CAR_CENTIO:
-		hitbox = Hitbox(64.409889f, 42.335182f, 14.697201f, 9.008572f, 0.0f, 12.0942f);
-		break;
+	//// BATMOBILE ---------------------------------------------------------------
+	//case CAR_BATMOBILE:
+	//	hitbox = Hitbox(64.409989f, 42.335182f, 14.697201f, 9.008572f, 0.0f, 12.0942f);
+	//	break;
+	//// PLANK type    ---------------------------------------------------------------
+	//case CAR_MANTIS:
+	//case CAR_TWINMILL:
+	//case CAR_PALADIN:
+	//case CAR_CENTIO:
+	//	hitbox = Hitbox(64.409889f, 42.335182f, 14.697201f, 9.008572f, 0.0f, 12.0942f);
+	//	break;
 
-	// DOMINUS type ---------------------------------------------------------------
-	case CAR_DOMINUS:
-	case CAR_HOTSHOT:
-	case CAR_DOMINUSGT:
-	case CAR_ICECHARGER:
-	case CAR_AFTERSHOCK:
-	case CAR_MASAMUNE:
-	case CAR_RIPPER:
-		hitbox = Hitbox(63.96339f, 41.639977f, 15.65f, 9.0f, 0.0f, 15.75f);
-		break;
+	//// DOMINUS type ---------------------------------------------------------------
+	//case CAR_DOMINUS:
+	//case CAR_HOTSHOT:
+	//case CAR_DOMINUSGT:
+	//case CAR_ICECHARGER:
+	//case CAR_AFTERSHOCK:
+	//case CAR_MASAMUNE:
+	//case CAR_RIPPER:
+	//	hitbox = Hitbox(63.96339f, 41.639977f, 15.65f, 9.0f, 0.0f, 15.75f);
+	//	break;
 
-	// HYBRID type ---------------------------------------------------------------
-	case CAR_VENOM:
-	case CAR_XDEVIL:
-	case CAR_XDEVILMK2:
-	case CAR_ENDO:
-	case CAR_ESPER:
-	case CAR_JOGER619RS:
-		hitbox = Hitbox(63.509594f, 41.093933f, 17.079536f, 13.87566f, 0.0f, 20.75499f);
-		break;
+	//// HYBRID type ---------------------------------------------------------------
+	//case CAR_VENOM:
+	//case CAR_XDEVIL:
+	//case CAR_XDEVILMK2:
+	//case CAR_ENDO:
+	//case CAR_ESPER:
+	//case CAR_JOGER619RS:
+	//	hitbox = Hitbox(63.509594f, 41.093933f, 17.079536f, 13.87566f, 0.0f, 20.75499f);
+	//	break;
 
-	// MERC type ---------------------------------------------------------------
-	case CAR_MERC:
-		hitbox = Hitbox(60.360115f, 38.355156f, 20.829536f, 11.375660f, 0.0f, 21.504988f);
-		break;
+	//// MERC type ---------------------------------------------------------------
+	//case CAR_MERC:
+	//	hitbox = Hitbox(60.360115f, 38.355156f, 20.829536f, 11.375660f, 0.0f, 21.504988f);
+	//	break;
 
-	// UNKNOWN types : return OCTANE for now.  TODO: fill these in
-	case CAR_SWEETTOOTH: //Will just spawn merc i guess, ps4 exclusive
-	case CAR_WARTHOG: //Halo car, XBOX exclusive
-	case 0:
-	default:
-		if (!car.IsNull()) {
-			Vector extent = car.GetLocalCollisionExtent();
-			Vector offset = car.GetLocalCollisionOffset();
-			hitbox = Hitbox(extent.X, extent.Y, extent.Z, offset.X, offset.Y, offset.Z);
-			break;
-		}
-		break;
-	}	
+	//// UNKNOWN types : return OCTANE for now.  TODO: fill these in
+	//case CAR_SWEETTOOTH: //Will just spawn merc i guess, ps4 exclusive
+	//case CAR_WARTHOG: //Halo car, XBOX exclusive
+	//case 0:
+	//default:
+	if (!car.IsNull()) {
+		Vector extent = car.GetLocalCollisionExtent();
+		Vector offset = car.GetLocalCollisionOffset();
+		hitbox = Hitbox(extent.X, extent.Y, extent.Z, offset.X, offset.Y, offset.Z);
+		//break;
+	}
+	//break;
 	return hitbox;
 }
 

@@ -9,7 +9,7 @@ class CarManager
 public:
 	CarManager();
 	static const std::string getHelpText();
-	static Hitbox getHitbox(CARBODY car_type, CarWrapper& car);
+	static Hitbox getHitbox(CarWrapper& car);
 	~CarManager();
 };
 
