@@ -1,0 +1,5 @@
+Direction plugin
+9|This plugin will render your car's direction in freeplay, custom training, custom maps, or replays.
+6|Show Direction|cl_soccar_showdirection|Off@0&Practice@1&Replays@2&Practice and Replays@3
+6|Direction to render|cl_soccar_setdirectiontype|Currently equipped car@0&Octane@23&Dominus@403&Batmobile/Plank@803&Breakout@22&Hybrid@1624&Merc@30
+13|Line color|cl_soccar_directioncolor

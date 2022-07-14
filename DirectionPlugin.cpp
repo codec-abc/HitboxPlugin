@@ -1,6 +1,6 @@
 #define LINMATH_H //Conflicts with linmath.h if we done declare this here
 
-#include "Directionplugin.h"
+#include "DirectionPlugin.h"
 #include "Hitbox.h"
 #include "CarManager.h"
 #include "bakkesmod/wrappers/GameEvent/ServerWrapper.h"
@@ -16,64 +16,65 @@
 #include "RenderingTools/Extra/RenderingMath.h"
 #include <sstream>
 
-BAKKESMOD_PLUGIN(Directionplugin, "Hitbox plugin", "2.1", PLUGINTYPE_FREEPLAY | PLUGINTYPE_CUSTOM_TRAINING)
+BAKKESMOD_PLUGIN(DirectionPlugin, "Direction plugin", "2.1", PLUGINTYPE_FREEPLAY | PLUGINTYPE_CUSTOM_TRAINING)
 
-Directionplugin::Directionplugin()
+DirectionPlugin::DirectionPlugin()
 {
 
 }
 
-Directionplugin::~Directionplugin()
+DirectionPlugin::~DirectionPlugin()
 {
 }
 
-void Directionplugin::onLoad()
+void DirectionPlugin::onLoad()
 {
-	hitboxOn = std::make_shared<int>(0);
-	cvarManager->registerCvar("cl_soccar_showdirection", "0", "Show Direction", true, true, 0, true, 3).bindTo(hitboxOn);
-	cvarManager->getCvar("cl_soccar_showdirection").addOnValueChanged(std::bind(&Directionplugin::OnHitboxOnValueChanged, this, std::placeholders::_1, std::placeholders::_2));
+	directionOn = std::make_shared<int>(0);
+	cvarManager->registerCvar("cl_soccar_showdirection", "0", "Show Direction", true, true, 0, true, 3).bindTo(directionOn);
+	cvarManager->getCvar("cl_soccar_showdirection").addOnValueChanged(std::bind(&DirectionPlugin::OnHitboxOnValueChanged, this, std::placeholders::_1, std::placeholders::_2));
 
-	hitboxColor = std::make_shared<LinearColor>(LinearColor{ 0.f,0.f,0.f,0.f });
-	cvarManager->registerCvar("cl_soccar_hitboxcolor", "#FFFF00", "Color of the hitbox visualization.", true).bindTo(hitboxColor);
+	directionColor = std::make_shared<LinearColor>(LinearColor{ 0.f,0.f,0.f,0.f });
+	cvarManager->registerCvar("cl_soccar_directioncolor", "#FFFF00", "Color of the hitbox visualization.", true).bindTo(directionColor);
+	
 
-	hitboxType = std::make_shared<int>(0);
-	cvarManager->registerCvar("cl_soccar_sethitboxtype", "0", "Set Hitbox Car Type", true, true, 0, true, 32767, false).bindTo(hitboxType);
-	cvarManager->getCvar("cl_soccar_sethitboxtype").addOnValueChanged(std::bind(&Directionplugin::OnHitboxTypeChanged, this, std::placeholders::_1, std::placeholders::_2));
+	directionType = std::make_shared<int>(0);
+	cvarManager->registerCvar("cl_soccar_setdirectiontype", "0", "Set Direction Type", true, true, 0, true, 32767, false).bindTo(directionType);
+	cvarManager->getCvar("cl_soccar_setdirectiontype").addOnValueChanged(std::bind(&DirectionPlugin::OnHitboxTypeChanged, this, std::placeholders::_1, std::placeholders::_2));
+	
 
-
-	gameWrapper->HookEvent("Function TAGame.Mutator_Freeplay_TA.Init", bind(&Directionplugin::OnFreeplayLoad, this, std::placeholders::_1));
-	gameWrapper->HookEvent("Function TAGame.GameEvent_Soccar_TA.Destroyed", bind(&Directionplugin::OnFreeplayDestroy, this, std::placeholders::_1));
-	gameWrapper->HookEvent("Function TAGame.GameEvent_TrainingEditor_TA.StartPlayTest", bind(&Directionplugin::OnFreeplayLoad, this, std::placeholders::_1));
-	gameWrapper->HookEvent("Function TAGame.GameEvent_TrainingEditor_TA.Destroyed", bind(&Directionplugin::OnFreeplayDestroy, this, std::placeholders::_1));
-	gameWrapper->HookEvent("Function TAGame.GameInfo_Replay_TA.InitGame", bind(&Directionplugin::OnFreeplayLoad, this, std::placeholders::_1));
-	gameWrapper->HookEvent("Function TAGame.Replay_TA.EventPostTimeSkip", bind(&Directionplugin::OnFreeplayLoad, this, std::placeholders::_1));
-	gameWrapper->HookEvent("Function TAGame.GameInfo_Replay_TA.Destroyed", bind(&Directionplugin::OnFreeplayDestroy, this, std::placeholders::_1));
+	gameWrapper->HookEvent("Function TAGame.Mutator_Freeplay_TA.Init", bind(&DirectionPlugin::OnFreeplayLoad, this, std::placeholders::_1));
+	gameWrapper->HookEvent("Function TAGame.GameEvent_Soccar_TA.Destroyed", bind(&DirectionPlugin::OnFreeplayDestroy, this, std::placeholders::_1));
+	gameWrapper->HookEvent("Function TAGame.GameEvent_TrainingEditor_TA.StartPlayTest", bind(&DirectionPlugin::OnFreeplayLoad, this, std::placeholders::_1));
+	gameWrapper->HookEvent("Function TAGame.GameEvent_TrainingEditor_TA.Destroyed", bind(&DirectionPlugin::OnFreeplayDestroy, this, std::placeholders::_1));
+	gameWrapper->HookEvent("Function TAGame.GameInfo_Replay_TA.InitGame", bind(&DirectionPlugin::OnFreeplayLoad, this, std::placeholders::_1));
+	gameWrapper->HookEvent("Function TAGame.Replay_TA.EventPostTimeSkip", bind(&DirectionPlugin::OnFreeplayLoad, this, std::placeholders::_1));
+	gameWrapper->HookEvent("Function TAGame.GameInfo_Replay_TA.Destroyed", bind(&DirectionPlugin::OnFreeplayDestroy, this, std::placeholders::_1));
 	gameWrapper->HookEvent("Function TAGame.Replay_TA.EventSpawned", [this](std::string eventName) {
-		this->OnHitboxTypeChanged("", cvarManager->getCvar("cl_soccar_sethitboxtype"));
+		this->OnHitboxTypeChanged("", cvarManager->getCvar("cl_soccar_setdirectiontype"));
 		});
 
-	cvarManager->registerNotifier("cl_soccar_listhitboxtypes", [this](std:: vector<std::string> params) {
+	/*cvarManager->registerNotifier("cl_soccar_listhitboxtypes", [this](std:: vector<std::string> params) {
 		cvarManager->log(CarManager::getHelpText());
 	}, "List all hitbox integer types, use these values as parameters for cl_soccar_sethitboxtype", PERMISSION_ALL);
-	
+	*/
 }
 
-void Directionplugin::OnFreeplayLoad(std::string eventName)
+void DirectionPlugin::OnFreeplayLoad(std::string eventName)
 {
 	// get the 8 hitbox points for current car type
 	hitboxes.clear();  // we'll reinitialize this in Render, for the first few ticks of free play, the car is null
 	cvarManager->log(std::string("OnFreeplayLoad") + eventName);
-	if (  *hitboxOn ) {
-		gameWrapper->RegisterDrawable(std::bind(&Directionplugin::Render, this, std::placeholders::_1));
+	if (*directionOn) {
+		gameWrapper->RegisterDrawable(std::bind(&DirectionPlugin::Render, this, std::placeholders::_1));
 	}	
 }
 
-void Directionplugin::OnFreeplayDestroy(std::string eventName)
+void DirectionPlugin::OnFreeplayDestroy(std::string eventName)
 {
 	gameWrapper->UnregisterDrawables();
 }
 
-void Directionplugin::OnHitboxOnValueChanged(std::string oldValue, CVarWrapper cvar)
+void DirectionPlugin::OnHitboxOnValueChanged(std::string oldValue, CVarWrapper cvar)
 {
 	int ingame = (gameWrapper->IsInReplay()) ? 2 : ((gameWrapper->IsInOnlineGame()) ? 0 : ((gameWrapper->IsInGame()) ? 1 : 0));
 	//cvarManager->log("OnHitboxValueChanged: " + std::to_string(ingame));
@@ -86,7 +87,7 @@ void Directionplugin::OnHitboxOnValueChanged(std::string oldValue, CVarWrapper c
 	}
 }
 
-void Directionplugin::OnHitboxTypeChanged(std::string oldValue, CVarWrapper cvar) {
+void DirectionPlugin::OnHitboxTypeChanged(std::string oldValue, CVarWrapper cvar) {
 	hitboxes.clear();
 }
 
@@ -127,10 +128,10 @@ void Directionplugin::OnHitboxTypeChanged(std::string oldValue, CVarWrapper cvar
 }
 
 
-void Directionplugin::Render(CanvasWrapper canvas)
+void DirectionPlugin::Render(CanvasWrapper canvas)
 {
 	int ingame = (gameWrapper->IsInGame()) ? 1 : (gameWrapper->IsInReplay()) ? 2 : 0;
-	if (*hitboxOn & ingame)
+	if (*directionOn & ingame)
 	{
 		if (gameWrapper->IsInOnlineGame() && ingame != 2) return;
 		ServerWrapper game = (ingame == 1) ? gameWrapper->GetGameEventAsServer() : gameWrapper->GetGameEventAsReplay();
@@ -155,7 +156,7 @@ void Directionplugin::Render(CanvasWrapper canvas)
 				//hitboxes.push_back(CarManager::getHitbox(static_cast<CARBODY>(*hitboxType), car));
 				hitboxes.push_back(CarManager::getHitbox(car));
 			}
-			canvas.SetColor(*hitboxColor);
+			canvas.SetColor(*directionColor);
 
 			Vector v = car.GetLocation();
 			Rotator r = car.GetRotation();
@@ -222,7 +223,7 @@ void Directionplugin::Render(CanvasWrapper canvas)
 	}
 }
 
-void Directionplugin::onUnload()
+void DirectionPlugin::onUnload()
 {
 }
 

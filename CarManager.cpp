@@ -8,7 +8,14 @@ CarManager::CarManager()
 Hitbox CarManager::getHitbox(CarWrapper& car)
 {
 	// octane default
-	Hitbox hitbox(118.0074000f / 2.0f, 84.1994100f / 2.0f, 36.1590700f / 2.0f, 13.87566f, 0.0f, 20.75499f);;
+	Hitbox hitbox(
+		118.0074000f / 2.0f, 
+		84.1994100f / 2.0f, 
+		36.1590700f / 2.0f, 
+		13.87566f, 
+		0.0f, 
+		20.75499f);
+
 	//switch (car_type) {
 	//// OCTANE type ---------------------------------------------------------------
 	//case CAR_OCTANE:
@@ -85,7 +92,13 @@ Hitbox CarManager::getHitbox(CarWrapper& car)
 	if (!car.IsNull()) {
 		Vector extent = car.GetLocalCollisionExtent();
 		Vector offset = car.GetLocalCollisionOffset();
-		hitbox = Hitbox(extent.X, extent.Y, extent.Z, offset.X, offset.Y, offset.Z);
+		hitbox = Hitbox(
+			extent.X + 20.0f, 
+			extent.Y + 20.0f, 
+			extent.Z + 20.0f, 
+			offset.X, 
+			offset.Y, 
+			offset.Z);
 		//break;
 	}
 	//break;
